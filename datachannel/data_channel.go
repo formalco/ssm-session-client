@@ -150,7 +150,7 @@ func (c *SsmDataChannel) WriteTo(w io.Writer) (n int64, err error) {
 					return n, err
 				}
 			}
-			
+
 			if isEOF {
 				return n, nil
 			}
@@ -229,12 +229,13 @@ func (c *SsmDataChannel) WriteMsg(msg *AgentMessage) (int, error) {
 	return int(msg.payloadLength), err
 }
 
-//nolint:gocognit,gocyclo
 // HandleMsg takes the unprocessed message bytes from the websocket connection (a la Read()), unmarshals the data
 // and takes the appropriate action based on the message type.  Messages which have an actionable payload (output
 // payload types, and channel closed payloads) will have that data returned.  Errors will be returned for unknown/
 // unhandled message or payload types.  A ChannelClosed message type will return an io.EOF error to indicate that
 // this SSM data channel is shutting down and should no longer be used.
+//
+//nolint:gocognit,gocyclo
 func (c *SsmDataChannel) HandleMsg(data []byte) ([]byte, error) {
 	m := new(AgentMessage)
 	if err := m.UnmarshalBinary(data); err != nil {
@@ -512,7 +513,7 @@ func buildHandshakeResponse(actions []RequestedClientAction) *HandshakeResponseP
 	res := HandshakeResponsePayload{
 		// seems this can be whatever we need it to be, however certain features may only be available at
 		// certain client versions (must report at least version 1.1.70 to do stream muxing)
-		ClientVersion:          "0.0.1",
+		ClientVersion:          "1.2.694.0",
 		ProcessedClientActions: make([]ProcessedClientAction, len(actions)),
 	}
 
